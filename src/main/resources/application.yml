@@ -1,1 +1,23 @@
-
+server:
+  port: 8080
+spring:
+  application:
+    name: accounts #name này phải trùng với name trong file property trên config server
+  profiles:
+    active: prod #Môi trường mà mình muốn lấy thông tin config
+  config:
+    import: optional:configserver:http://localhost:8071 #Khai báo endpoint của config server.
+      #Optional có nghĩa là khi config server bị chết thì microservive này sẽ không bị ảnh hưởng
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  h2:
+    console:
+      enabled: true
