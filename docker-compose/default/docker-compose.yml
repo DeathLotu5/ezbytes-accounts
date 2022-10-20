@@ -1,0 +1,71 @@
+version: "3.8" #version mà ta muốn sử dụng
+
+services: #Nơi xác định tất cả các application là microservices mà ta muốn start bằng cách sử dụng file docker-compose này
+
+  configserver:
+    image: eazybytes/configserver:latest
+    mem_limit: 700m
+    ports:
+      - "8071:8071"
+    networks:
+      - eazybank #Nơi mà các microservice giao tiếp với nhau
+
+  accounts:
+    image: eazybytes/accounts:latest
+    mem_limit: 700m
+    ports:
+      - "8080:8080"
+    networks:
+      - eazybank
+    depends_on: #Để nói rằng accounts service phụ thuộc vào service nào
+      - configserver #Docker compose sẽ đảm bảo rằng service được khai báo sẽ được chạy trước khi nó bắt đầu chạy service này
+    deploy:
+      restart_policy: #Để khởi động lại service này khi
+        condition: on-failure #Điều kiện để start lại là fail
+        delay: 5s
+        max_attempts: 3 #Tối đa restart là 3 lần
+        window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/ #Khi mà đang ở trong cùng 1
+        #network thì khai báo tên của service thay vì ip hay localhost sẽ tương tự nhau, Docker-container sẽ tự hiểu điều đó
+
+  loans:
+    image: eazybytes/loans:latest
+    mem_limit: 700m
+    ports:
+      - "8090:8090"
+    networks:
+      - eazybank
+    depends_on:
+      - configserver
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+
+  cards:
+    image: eazybytes/cards:latest
+    mem_limit: 700m
+    ports:
+      - "9000:9000"
+    networks:
+      - eazybank
+    depends_on:
+      - configserver
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+networks:
+  eazybank:
