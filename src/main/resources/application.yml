@@ -21,3 +21,9 @@ spring:
   h2:
     console:
       enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" #Để nói với spring là hãy show ra hết tất cả các URL của Actuator.
