@@ -1,10 +1,10 @@
 package com.ezbytes.hellowordservice.controllers;
 
 import com.ezbytes.hellowordservice.config.AccountServiceConfig;
-import com.ezbytes.hellowordservice.entity.Accounts;
-import com.ezbytes.hellowordservice.entity.Customer;
-import com.ezbytes.hellowordservice.entity.Properties;
+import com.ezbytes.hellowordservice.entity.*;
 import com.ezbytes.hellowordservice.repository.AccountsRepository;
+import com.ezbytes.hellowordservice.service.client.CardsFeignClient;
+import com.ezbytes.hellowordservice.service.client.LoansFeignClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 
 
 @RestController
@@ -24,6 +25,12 @@ public class AccountsController {
 
 	@Autowired
 	private AccountServiceConfig accountServiceConfig;
+
+	@Autowired
+	private CardsFeignClient cardsFeignClient;
+
+	@Autowired
+	private LoansFeignClient loansFeignClient;
 
 	@PostMapping("/myAccount")
 	public Accounts getAccountDetails(@RequestBody Customer customer) {
@@ -40,6 +47,15 @@ public class AccountsController {
 				accountServiceConfig.getActiveBranches()
 				);
 		return ow.writeValueAsString(properties);
+	}
+
+	@PostMapping("/myCustomerDetails")
+	public MyCustomerDetails myCustomerDetails(@RequestBody Customer customer) {
+		Accounts account = accountsRepository.findByCustomerId(customer.getCustomerId());
+		List<LoansEntity> loans = loansFeignClient.getLoanDetails(customer);
+		List<CardEntity> cards = cardsFeignClient.getCardDetails(customer);
+
+
 	}
 
 }

@@ -23,7 +23,35 @@ spring:
       enabled: true
 
 management:
+  info:
+    env:
+      enabled: true #Để bật tính năng info bên dưới
   endpoints:
     web:
       exposure:
         include: "*" #Để nói với spring là hãy show ra hết tất cả các URL của Actuator.
+  endpoint:
+    shutdown:
+      enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true #Tiến hành và đăng kí lên Eureka bất cứ khi nào khi chúng ta start service lên
+    fetch-registry: true #Kéo tất cả các chi tiết nơi đăng kí thể hiện bên trong Eureka bất cứ khi nào chúng ta kết nối đến Eureka
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: Accounts Microservice
+    description: Eazy Bank Accounts Application
+    version: 1.0.0
+#Những thông tin này sẽ được hiển thị khi chúng ta truy cập đến trang /info
+
+endpoints:
+  shutdown:
+    enabled: true
+
+
