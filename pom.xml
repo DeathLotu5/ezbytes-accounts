@@ -11,7 +11,7 @@
 	<groupId>com.ezbytes</groupId>
 	<artifactId>accounts</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>hellowordservice</name>
+	<name>accounts</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>8</java.version>

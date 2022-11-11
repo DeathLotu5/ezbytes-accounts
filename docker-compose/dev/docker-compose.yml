@@ -9,6 +9,25 @@ services: #Nơi xác định tất cả các application là microservices mà t
       - "8071:8071"
     networks:
       - eazybank #Nơi mà các microservice giao tiếp với nhau
+      
+  euraka-server:
+    image: duongph130599/euraka-server:latest
+    mem_limit: 700m
+    ports:
+      - "8070:8070"
+    networks:
+      - eazybank
+    depends_on:
+      - configserver
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/  
 
   accounts:
     image: eazybytes/accounts:latest
@@ -19,6 +38,7 @@ services: #Nơi xác định tất cả các application là microservices mà t
       - eazybank
     depends_on: #Để nói rằng accounts service phụ thuộc vào service nào
       - configserver #Docker compose sẽ đảm bảo rằng service được khai báo sẽ được chạy trước khi nó bắt đầu chạy service này
+      - euraka-server
     deploy:
       restart_policy: #Để khởi động lại service này khi
         condition: on-failure #Điều kiện để start lại là fail
@@ -29,6 +49,7 @@ services: #Nơi xác định tất cả các application là microservices mà t
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/ #Khi mà đang ở trong cùng 1
         #network thì khai báo tên của service thay vì ip hay localhost sẽ tương tự nhau, Docker-container sẽ tự hiểu điều đó
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://euraka-server:8070/eureka/
 
   loans:
     image: eazybytes/loans:latest
@@ -39,6 +60,7 @@ services: #Nơi xác định tất cả các application là microservices mà t
       - eazybank
     depends_on:
       - configserver
+      - euraka-server
     deploy:
       restart_policy:
         condition: on-failure
@@ -48,6 +70,7 @@ services: #Nơi xác định tất cả các application là microservices mà t
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://euraka-server:8070/eureka/
 
   cards:
     image: eazybytes/cards:latest
@@ -58,6 +81,7 @@ services: #Nơi xác định tất cả các application là microservices mà t
       - eazybank
     depends_on:
       - configserver
+      - euraka-server
     deploy:
       restart_policy:
         condition: on-failure
@@ -67,6 +91,7 @@ services: #Nơi xác định tất cả các application là microservices mà t
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://euraka-server:8070/eureka/
 networks:
   eazybank:
     

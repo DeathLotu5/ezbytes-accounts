@@ -5,7 +5,7 @@ FROM openjdk:8-slim as build
 MAINTAINER eazybytes.com
 
 #Add file application jar vào container
-COPY target/hellowordservice-0.0.1-SNAPSHOT.jar hellowordservice-0.0.1-SNAPSHOT.jar
+COPY target/accounts-0.0.1-SNAPSHOT.jar accounts-0.0.1-SNAPSHOT.jar
 
 #Thực hiện chạy application
-ENTRYPOINT ["java", "-jar", "/hellowordservice-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/accounts-0.0.1-SNAPSHOT.jar"]

@@ -55,7 +55,11 @@ public class AccountsController {
 		List<LoansEntity> loans = loansFeignClient.getLoanDetails(customer);
 		List<CardEntity> cards = cardsFeignClient.getCardDetails(customer);
 
-
+		MyCustomerDetails myCustomerDetails = new MyCustomerDetails();
+		myCustomerDetails.setAccounts(account);
+		myCustomerDetails.setLoans(loans);
+		myCustomerDetails.setCards(cards);
+		return myCustomerDetails;
 	}
 
 }
