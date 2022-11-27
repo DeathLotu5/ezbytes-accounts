@@ -54,4 +54,26 @@ endpoints:
   shutdown:
     enabled: true
 
-
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true #Tiến hành và đăng kí tất cả các Circuit Breaker health có thông tin
+        #liên quan đến actuator để ta có thể xem bên trong actuator, cái circuit breaker mà ta có, health của nó,
+        #State của Circuit Breaker, tất cả các thông tin mà ta có thể thấy, mặc định thì nó sẽ là disable, chúng ta
+        #enable nó lên bằng cách set cho nó giá trị là TRUE
+    instances:
+      detailsForCustomerSupportApp: #Là cái name mà ta set ở đầu api
+        minimum-number-of-calls: 5 #Ra lệnh cho Circuit Breaker rằng, giám sát tối thiểu 5 restquest đến api,
+        #Giá trị mặc định là 50, nhưng vì phục vụ cho việc test, chúng ta để là 5, Cái nó sẽ làm là giám sát ít nhất
+        #5 yêu cầu đến cái mà đang diễn ra với API để giữ Circuit Close or Open dựa trên ngưỡng tỉ lệ thất bại
+        failure-rate-threshold: 50
+        #Ngưỡng mà Circuit cần để quyết định Open Circuit hay không, Ở đầy là 50%, tức là nếu hết 5 request mà có 3
+        #cái quest failing thì nó sẽ mở Circuit, vì thế, nó sẽ thất bại nhanh và trả về response nhanh hơn cho người đang invoke nó
+        wait-duration-in-open-state: 30000
+        #Để chỉ ra cái Half Open State, sẽ nói sau bao lâu thì Circuit phải chờ để quyết định để có Half Open,
+        #và cho phép xem request để quyết định xem Microservice đó đang làm việc đúng hay không.
+        #Ở đây chúng ta đang set là 30s, mặc định là 60s
+        permitted-number-of-calls-in-half-open-state: 2
+        #Khi đang ở trong Half Open Status, có thể cho phép bao nhiêu request. Nếu 1 trong 2 faile thì trở lại trạng thía Open
+        #Chứ không được đóng nó lại

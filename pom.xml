@@ -64,6 +64,27 @@
 		</dependency>
 <!--		Cái này sẽ phát hành cần bằng tải từ phía client -->
 
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-spring-boot2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-circuitbreaker</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-timelimiter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+<!--Lí do chúng ta add thêm aop vào là vì thư viện resilience sử dụng rất nhiều về lập trình hướng khía canh.chúng ta sẽ
+có 1 người cố vấn runtime đến application mà không cần viết nhiều logix-->
 	</dependencies>
 
 	<dependencyManagement>

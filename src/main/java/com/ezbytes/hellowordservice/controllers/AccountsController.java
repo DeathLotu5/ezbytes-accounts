@@ -8,6 +8,7 @@ import com.ezbytes.hellowordservice.service.client.LoansFeignClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,7 @@ public class AccountsController {
 	}
 
 	@PostMapping("/myCustomerDetails")
+	@CircuitBreaker(name = "detailsForCustomerSupportApp")
 	public MyCustomerDetails myCustomerDetails(@RequestBody Customer customer) {
 		Accounts account = accountsRepository.findByCustomerId(customer.getCustomerId());
 		List<LoansEntity> loans = loansFeignClient.getLoanDetails(customer);
