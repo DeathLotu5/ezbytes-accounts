@@ -77,3 +77,21 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 2
         #Khi đang ở trong Half Open Status, có thể cho phép bao nhiêu request. Nếu 1 trong 2 faile thì trở lại trạng thía Open
         #Chứ không được đóng nó lại
+  retry:
+    configs:
+      default:
+        register-health-indicator: true #Tương tự như trên Circuit Breaker
+    instances:
+      retryForCustomerDetails: #Tên của cái Retry mà ta đăng kí
+        max-retry-attempts: 3 #Số lần tối đa mà retry được truy vấn
+        wait-duration: 2000 # 2 seconds
+
+  ratelimiter:
+    configs:
+      default:
+        register-health-indicator: true
+    instances:
+      sayHello:
+        timeout-duration: 5000 #luồng của ta sẽ phải chờ bao nhiêu lâu để nhận chỗ
+        limit-refresh-period: 5000
+        limit-for-period: 1 #Số request mà t muốn giới hạn. Ở đây ta giới hạn 1 để test
